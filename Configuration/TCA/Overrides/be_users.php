@@ -4,9 +4,16 @@ declare(strict_types=1);
 
 use TYPO3\CMS\Backend\Backend\ColorScheme;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
-use TYPO3\CMS\Setup\Controller\SetupModuleController;
+use TYPO3\CMS\Setup\UserFunctions\UserSettingsItemsProcFunc;
 
 defined('TYPO3') or die();
+
+$GLOBALS['TCA']['be_users']['columns']['user_settings'] = [
+    'label' => 'setup.messages:user_settings',
+    'config' => [
+        'type' => 'json',
+    ],
+];
 
 // Set up the showitem structure with tabs
 $GLOBALS['TCA']['be_users']['columns']['user_settings']['showitem'] = '
@@ -44,7 +51,11 @@ ExtensionManagementUtility::addUserSetting(
 ExtensionManagementUtility::addUserSetting(
     'avatar',
     [
-        'inheritFromParent' => true,
+        'label' => 'setup.messages:avatar',
+        'config' => [
+            'type' => 'none',
+            'renderType' => 'avatar',
+        ],
     ],
     'after:emailMeAtLogin'
 );
@@ -54,7 +65,9 @@ ExtensionManagementUtility::addUserSetting(
         'label' => 'setup.messages:language',
         'table' => 'be_users',
         'config' => [
-            'type' => 'language',
+            'type' => 'select',
+            'renderType' => 'selectSingle',
+            'itemsProcFunc' => UserSettingsItemsProcFunc::class . '->addLanguageItems',
         ],
     ],
     'after:avatar'
@@ -72,8 +85,13 @@ ExtensionManagementUtility::addUserSetting(
 ExtensionManagementUtility::addUserSetting(
     'password2',
     [
-        'inheritFromParent' => true,
         'label' => 'setup.messages:newPasswordAgain',
+        'config' => [
+            'type' => 'password',
+            'passwordPolicy' => $GLOBALS['TYPO3_CONF_VARS']['BE']['passwordPolicy'] ?? '',
+            'size' => 20,
+            'required' => true,
+        ],
     ],
     'after:password'
 );
@@ -82,7 +100,12 @@ ExtensionManagementUtility::addUserSetting(
     [
         'label' => 'setup.messages:mfaProviders',
         'config' => [
-            'type' => 'mfa',
+            // @todo Use a new internal TCA type to prevent raw data being displayed in the backend
+            'type' => 'none',
+            'renderType' => 'mfaInfo',
+        ],
+        'authenticationContext' => [
+            'group' => 'be.userManagement',
         ],
     ],
     'after:password2'
@@ -124,7 +147,7 @@ ExtensionManagementUtility::addUserSetting(
         'config' => [
             'type' => 'select',
             'renderType' => 'selectSingle',
-            'itemsProcFunc' => SetupModuleController::class . '->renderStartModuleSelect',
+            'itemsProcFunc' => UserSettingsItemsProcFunc::class . '->renderStartModuleSelect',
             'items' => [],
         ],
     ],
@@ -152,7 +175,7 @@ ExtensionManagementUtility::addUserSetting(
         'config' => [
             'type' => 'select',
             'renderType' => 'selectSingle',
-            'itemsProcFunc' => SetupModuleController::class . '->renderDateTimeFirstDayOfWeekSelect',
+            'itemsProcFunc' => UserSettingsItemsProcFunc::class . '->renderDateTimeFirstDayOfWeekSelect',
             'items' => [],
         ],
     ],
