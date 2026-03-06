@@ -6,7 +6,7 @@
 <f:layout name="Module" />
 
 <f:section name="Before">
-    <f:asset.module identifier="@typo3/backend/tabs.js"/>
+    <f:asset.module identifier="@typo3/backend/tab.js"/>
 </f:section>
 
 <f:section name="Content">
@@ -24,15 +24,14 @@
         spellcheck="false"
     >
         <div role="tabpanel">
-            <ul class="nav nav-tabs form-section-tabs t3js-tabs" role="tablist" id="tabs-{menuId}" data-store-last-tab="1">
+            <ul class="nav nav-tabs" role="tablist" id="tabs-{menuId}" data-store-last-tab>
                 <f:for each="{menuItems}" as="item" iteration="iteration">
                     <f:if condition="{item.content}">
-                        <li role="presentation" class="t3js-tabmenu-item nav-item">
+                        <li role="presentation" class="nav-item">
                             <button
                                 type="button"
                                 class="nav-link {f:if(condition: '{iteration.cycle} == 1', then: ' active')}"
-                                data-bs-toggle="tab"
-                                data-bs-target="#{menuId}-{iteration.cycle}"
+                                data-typo3-tab="#{menuId}-{iteration.cycle}"
                                 aria-controls="{menuId}-{iteration.cycle}"
                                 role="tab"
                             >
