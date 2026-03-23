@@ -26,6 +26,7 @@ use TYPO3\CMS\Backend\Module\ModuleProvider;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\Template\Components\ButtonBar;
 use TYPO3\CMS\Backend\Template\Components\ComponentFactory;
+use TYPO3\CMS\Backend\Template\Enum\ModuleLayout;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -217,6 +218,7 @@ class SetupModuleController
             'FormEngine.remainingCharacters' => $languageService->sL('LLL:EXT:core/Resources/Private/Language/locallang_core.xlf:labels.remainingCharacters'),
         ]);
         $view->setTitle($languageService->sL('LLL:EXT:setup/Resources/Private/Language/locallang.xlf:UserSettings'));
+        $view->setLayout(ModuleLayout::NORMAL);
         // Getting the 'override' values as set might be set in user TSconfig
         $this->overrideConf = $backendUser->getTSConfig()['setup.']['override.'] ?? [];
         // Getting the disabled fields might be set in user TSconfig (eg setup.fields.password.disabled=1)
